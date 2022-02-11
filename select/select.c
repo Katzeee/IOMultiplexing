@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 			printf("select() timeout.\n");
 			continue;
 		}
-		for(int eventfd = 0 ; eventfd <= maxfd ; eventfd++)
+		for(int eventfd = 0 ; eventfd < maxfd + 1; eventfd++)
 		{
 			if(FD_ISSET(eventfd, &tmpfdset)<=0)
 				continue;
@@ -61,6 +61,11 @@ int main(int argc, char *argv[])
 					continue;
 				}
 				printf("client(socket=%d) connected ok.\n", clientsock);
+				FD_SET(clientsock, &readfdset);
+				if(maxfd < clientsock)
+				{
+					maxfd = clientsock;
+				}
 				continue;
 			}
 			else //data from clients or disconnection of clients
